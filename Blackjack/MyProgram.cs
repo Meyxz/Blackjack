@@ -6,9 +6,12 @@ namespace Blackjack
 {
     class MyProgram
     {
+        Table table;
+
         public void Run()
         {
-
+            table = new Table();
+            table.PlayTable();
         }
     }
 }
