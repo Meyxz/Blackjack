@@ -7,6 +7,7 @@ namespace Blackjack
     class Hand
     {
         public List<Card> cards;
+        public List<Card> split;
         public int handValue { get; private set; }
         public float money;
         public float bet;

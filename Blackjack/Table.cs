@@ -96,12 +96,14 @@ namespace Blackjack
             string tempPrint = string.Empty;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Dealer's Cards");
+            Console.ResetColor();
             foreach (Card card in dealer.dealerHand.cards)
             {
                 Console.WriteLine(card.CardPrint(tempPrint));
             }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Your Cards");
+            Console.ResetColor();
             foreach (Card card in playerHand.cards)
             {
                 Console.WriteLine(card.CardPrint(tempPrint));
@@ -132,6 +134,8 @@ namespace Blackjack
                         break;
                     // Split
                     case ConsoleKey.Q:
+                        Split();
+                        
                         break;
                     default:
                         break;
@@ -161,7 +165,11 @@ namespace Blackjack
                 playerHand.money -= playerHand.bet;
                 playerHand.bet += playerHand.bet;
             }
-            
+        }
+
+        void Split()
+        {
+
         }
     }
 }
