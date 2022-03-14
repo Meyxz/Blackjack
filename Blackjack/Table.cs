@@ -60,6 +60,10 @@ namespace Blackjack
                 case ConsoleKey.S:
                     Stand();
                     break;
+                case ConsoleKey.D:
+                    break;
+                case ConsoleKey.Q:
+                    break;
                 default:
                     break;
             }
