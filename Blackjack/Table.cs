@@ -9,11 +9,14 @@ namespace Blackjack
     {
         Dealer dealer;
         Hand playerHand;
+        const int maxValue = 21;
+        bool isBusted;
 
         public Table()
         {
             dealer = new Dealer(6);
             playerHand = new Hand();
+            isBusted = false;
         }
 
         public void PlayTable()
@@ -29,6 +32,7 @@ namespace Blackjack
                 }
             }
             PrintCards();
+            PlayerChoice();
         }
 
         void PrintCards()
@@ -45,5 +49,37 @@ namespace Blackjack
                 Console.WriteLine(card.CardPrint(tempPrint));
             }
         }
+
+        void PlayerChoice()
+        {
+            switch (Console.ReadKey(true).Key)
+            {
+                case ConsoleKey.Spacebar:
+                    Hit();
+                    break;
+                case ConsoleKey.S:
+                    Stand();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        void Hit()
+        {
+            dealer.Deal(playerHand, 1);
+            playerHand.HandValue();
+            if (playerHand.handValue > maxValue)
+            {
+                isBusted = true;
+            }
+        }
+
+        void Stand()
+        {
+
+        }
+
+
     }
 }

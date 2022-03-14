@@ -70,9 +70,9 @@ namespace Blackjack
                 }
             }
 
-            if (!isAceHard)
+            if (aceCheck)
             {
-                if (handValue > maxValue && aceCheck)
+                if (handValue > maxValue && !isAceHard)
                 {
                     isAceHard = true;
                     handValue -= 10;
