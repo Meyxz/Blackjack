@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Blackjack
 {
-    public enum Values
+    public enum Value
     {
-        Ace = 0,
+        Ace,
         Two,
         Three,
         Four,
@@ -21,13 +21,31 @@ namespace Blackjack
         King
     }
 
+    public enum Suit
+    {
+        Clubs,
+        Diamonds,
+        Hearts,
+        Spades
+    }
+
     class Card
     {
-        private bool isActive;
+        public bool isAvailable;
+        public readonly Value cardValue;
+        public readonly Suit cardSuit;
 
-        public Card()
+        public Card(Value cardValue, Suit suit)
         {
-            isActive = true;
+            this.cardValue = cardValue;
+            this.cardSuit = suit;
+            isAvailable = true;
+        }
+
+        public virtual string CardPrint(string output)
+        {
+            output = this.cardValue.ToString() + "ERROR";
+            return output;
         }
     }
 }
