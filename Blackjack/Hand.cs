@@ -8,15 +8,21 @@ namespace Blackjack
     {
         public List<Card> cards;
         public int handValue { get; private set; }
+        public float money;
+        public float bet;
         private const int maxValue = 21;
         private bool isAceHard;
         private bool aceCheck;
+        public bool isBusted;
 
         public Hand()
         {
             cards = new List<Card>();
             isAceHard = false;
             aceCheck = false;
+            isBusted = false;
+            money = 500;
+            bet = 0;
         }
 
         public void HandValue()

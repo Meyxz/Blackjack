@@ -10,8 +10,14 @@ namespace Blackjack
 
         public void Run()
         {
+            bool gameRunning = true;
             table = new Table();
-            table.PlayTable();
+            Console.CursorVisible = false;
+
+            while (gameRunning)
+            {
+                table.PlayTable();
+            }
         }
     }
 }
