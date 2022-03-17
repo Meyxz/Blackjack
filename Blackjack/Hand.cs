@@ -7,10 +7,7 @@ namespace Blackjack
     class Hand
     {
         public List<Card> cards;
-        public List<Card> split;
         public int handValue { get; private set; }
-        public float money;
-        public float bet;
         private const int maxValue = 21;
         private bool isAceHard;
         private bool aceCheck;
@@ -22,13 +19,11 @@ namespace Blackjack
             isAceHard = false;
             aceCheck = false;
             isBusted = false;
-            money = 500;
-            bet = 0;
         }
 
-        public void HandValue()
+        public void HandValue(List<Card> deck)
         {
-            foreach (Card card in cards)
+            foreach (Card card in deck)
             {
                 switch (card.cardValue)
                 {

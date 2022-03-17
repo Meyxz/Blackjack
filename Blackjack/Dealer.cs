@@ -17,17 +17,17 @@ namespace Blackjack
             dealerHand = new Hand();
         }
 
-        public Hand Deal(Hand hand, int numOfCards)
+        public List<Card> Deal(List<Card> cards, int numOfCards)
         {
             Card card;
             for (int i = 0; i < numOfCards; i++)
             {
                 card = deck.cards.Find(x => x.isAvailable);
-                hand.cards.Add(card);
+                cards.Add(card);
                 card.isAvailable = false;
             }
 
-            return hand;
+            return cards;
         }
     }
 }
