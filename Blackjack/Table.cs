@@ -24,6 +24,8 @@ namespace Blackjack
             playerHand.bet = 0;
             TableBet();
 
+            
+
             dealer.Deal(playerHand.cards, 2);
             dealer.Deal(dealer.dealerHand.cards, 2);
             if (dealer.dealerHand.cards.Any(card => card.cardValue == Value.Ace))
@@ -35,8 +37,8 @@ namespace Blackjack
                     EndCheck();
                 }
             }
-            PrintCards();
             PlayerChoice();
+            PrintCards();
             EndCheck();            
         }
 
@@ -72,8 +74,20 @@ namespace Blackjack
             Console.CursorVisible = false;
         }
 
-        void EndCheck()
+        public void Reset()
         {
+            playerHand.split.Clear();
+            playerHand.cards.Clear();
+            dealer.dealerHand.cards.Clear();
+            if (dealer.deck.cards.Count >= 200)
+            {
+                dealer = new Dealer(6);
+            }
+        }
+
+        void EndCheck() //todo
+        {
+            
             // Blackjack
             if (playerHand.handValue == maxValue)
             {
@@ -85,6 +99,7 @@ namespace Blackjack
                 }
                 else
                 {
+                    Console.WriteLine("Blackjack");
                     playerHand.money += (playerHand.bet * 2.5F);
                 }
             }
@@ -128,18 +143,19 @@ namespace Blackjack
 
             while (!isPlayerDone && !playerHand.isBusted)
 	        {
+                PrintCards();
                 if (!isSplit)
                 {
                     if (!isFirstAction)
                     {
                         if (playerHand.cards[0].Equals(playerHand.cards[1]))
                         {
-                            Console.WriteLine("Space: Hit\nS: Stand\nD: Double-Down\nQ: Split");
+                            Console.WriteLine("Space: Hit S: Stand D: Double-Down Q: Split");
                             switch (Console.ReadKey(true).Key)
                             {
                                 // Hit
                                 case ConsoleKey.Spacebar:
-                                    Hit(playerHand, isSplit);
+                                    Hit(playerHand);
                                     break;
                                 // Stand
                                 case ConsoleKey.S:
@@ -161,7 +177,104 @@ namespace Blackjack
                         }
                         else
                         {
-                            Console.WriteLine("Space: Hit\nS: Stand\nD: Double-Down");
+                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                // Hit
+                                case ConsoleKey.Spacebar:
+                                    Hit(playerHand);
+                                    break;
+                                // Stand
+                                case ConsoleKey.S:
+                                    isPlayerDone = true;
+                                    break;
+                                // Double-down
+                                case ConsoleKey.D:
+                                    DoubleDown();
+                                    isPlayerDone = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        isFirstAction = false;
+                    }
+                    else
+                    {
+                        // After hit
+                        PrintCards();
+                        Console.WriteLine("Space: Hit\nS: Stand");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand);
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                isPlayerDone = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    // Split
+                    bool firstSplit = true;
+                    bool firstSplitCall = true;
+                    if (firstSplit)
+                    {
+                        if (firstSplitCall) //First action on first deck
+                        {
+                            PrintCards();
+                            Console.WriteLine("First Deck\nSpace: Hit\nS: Stand\nD: Double-Down");
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                // Hit
+                                case ConsoleKey.Spacebar:
+                                    Hit(playerHand);
+                                    break;
+                                // Stand
+                                case ConsoleKey.S:
+                                    isPlayerDone = true;
+                                    break;
+                                // Double-down
+                                case ConsoleKey.D:
+                                    DoubleDown();
+                                    isPlayerDone = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            firstSplitCall = false;
+                        }
+                        else 
+                        {
+                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                // Hit
+                                case ConsoleKey.Spacebar:
+                                    Hit(playerHand, isSplit);
+                                    break;
+                                // Stand
+                                case ConsoleKey.S:
+                                    isPlayerDone = true;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else // Second deck
+                    {
+                        firstSplitCall = true;
+                        if (firstSplitCall) //First action on first deck
+                        {
+                            PrintCards();
+                            Console.WriteLine("First Deck\nSpace: Hit S: Stand D: Double-Down");
                             switch (Console.ReadKey(true).Key)
                             {
                                 // Hit
@@ -180,86 +293,41 @@ namespace Blackjack
                                 default:
                                     break;
                             }
+                            firstSplitCall = false;
                         }
-                    }
-                    else
-                    {
-                        // After hit
-                        PrintCards();
-                        Console.WriteLine("Space: Hit\nS: Stand");
-                        switch (Console.ReadKey(true).Key)
+                        else
                         {
-                            // Hit
-                            case ConsoleKey.Spacebar:
-                                Hit(playerHand, isSplit);
-                                break;
-                            // Stand
-                            case ConsoleKey.S:
-                                isPlayerDone = true;
-                                break;
-                            default:
-                                break;
+                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                            switch (Console.ReadKey(true).Key)
+                            {
+                                // Hit
+                                case ConsoleKey.Spacebar:
+                                    Hit(playerHand, isSplit);
+                                    break;
+                                // Stand
+                                case ConsoleKey.S:
+                                    isPlayerDone = true;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    // Split
-                    PrintCards();
-                    Console.WriteLine("Space: Hit\nS: Stand\nD: Double-Down");
-                    switch (Console.ReadKey(true).Key)
-                    {
-                        // Hit
-                        case ConsoleKey.Spacebar:
-                            Hit(playerHand, isSplit);
-                            break;
-                        // Stand
-                        case ConsoleKey.S:
-                            isPlayerDone = true;
-                            break;
-                        // Double-down
-                        case ConsoleKey.D:
-                            DoubleDown();
-                            isPlayerDone = true;
-                            break;
-                        default:
-                            break;
+
                     }
                 }
 	        }
         }
 
-        Hand Hit(PlayerHand player, bool isSplit)
+        Hand Hit(PlayerHand player)
         {
-            if (!isSplit)
+            dealer.Deal(player.cards, 1);
+            player.HandValue(player.cards);
+            if (player.handValue > maxValue)
             {
-                dealer.Deal(player.cards, 1);
-                player.HandValue(player.cards);
-                if (player.handValue > maxValue)
-                {
-                    Console.WriteLine("\nBust");
-                    player.isBusted = true;
-                }
-
-
+                Console.WriteLine("\nBust");
+                player.isBusted = true;
             }
-            else
-            {
-                dealer.Deal(player.cards, 1);
-                player.HandValue(player.cards);
-                if (player.handValue > maxValue)
-                {
-                    Console.WriteLine("Deck 1 Bust");
-                    player.isBusted = true;
-                }
-                dealer.Deal(player.split, 1);
-                player.HandValue(player.cards);
-                if (player.handValue > maxValue)
-                {
-                    Console.WriteLine("Deck 2 Bust");
-                    player.isBusted = true;
-                }
-            }
+
             return player;
         }
 
@@ -281,8 +349,6 @@ namespace Blackjack
         {
             playerHand.split.Add(playerHand.cards[1]);
             playerHand.cards.Remove(playerHand.cards[1]);
-            
-            Hit(playerHand)
         }
     }
 }

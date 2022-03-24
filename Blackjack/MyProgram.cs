@@ -17,6 +17,7 @@ namespace Blackjack
             while (gameRunning)
             {
                 table.PlayTable();
+                table.Reset();
             }
         }
     }

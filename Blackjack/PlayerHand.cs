@@ -12,6 +12,7 @@ namespace Blackjack
 
         public PlayerHand()
         {
+            split = new List<Card>();
             money = 500;
             bet = 0;
         }
