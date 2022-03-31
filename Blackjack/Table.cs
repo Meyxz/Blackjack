@@ -138,72 +138,16 @@ namespace Blackjack
         void PlayerChoice()
         {
             bool isPlayerDone = false;
-            bool isSplit = false;
             bool isFirstAction = false;
 
             while (!isPlayerDone && !playerHand.isBusted)
 	        {
                 PrintCards();
-                if (!isSplit)
+                if (!isFirstAction)
                 {
-                    if (!isFirstAction)
+                    if (playerHand.cards[0].Equals(playerHand.cards[1]))
                     {
-                        if (playerHand.cards[0].Equals(playerHand.cards[1]))
-                        {
-                            Console.WriteLine("Space: Hit S: Stand D: Double-Down Q: Split");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                // Double-down
-                                case ConsoleKey.D:
-                                    DoubleDown();
-                                    isPlayerDone = true;
-                                    break;
-                                // Split
-                                case ConsoleKey.Q:
-                                    Split();
-                                    isSplit = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                // Double-down
-                                case ConsoleKey.D:
-                                    DoubleDown();
-                                    isPlayerDone = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        isFirstAction = false;
-                    }
-                    else
-                    {
-                        // After hit
-                        PrintCards();
-                        Console.WriteLine("Space: Hit\nS: Stand");
+                        Console.WriteLine("Space: Hit S: Stand D: Double-Down Q: Split");
                         switch (Console.ReadKey(true).Key)
                         {
                             // Hit
@@ -214,121 +158,70 @@ namespace Blackjack
                             case ConsoleKey.S:
                                 isPlayerDone = true;
                                 break;
+                            // Double-down
+                            case ConsoleKey.D:
+                                DoubleDown();
+                                isPlayerDone = true;
+                                break;
+                            // Split
+                            case ConsoleKey.Q:
+                                Split();
+                                break;
                             default:
                                 break;
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand);
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                isPlayerDone = true;
+                                break;
+                            // Double-down
+                            case ConsoleKey.D:
+                                DoubleDown();
+                                isPlayerDone = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    isFirstAction = false;
                 }
                 else
                 {
-                    // Split
-                    bool firstSplit = true;
-                    bool firstSplitCall = true;
-                    if (firstSplit)
+                    // After hit
+                    PrintCards();
+                    Console.WriteLine("Space: Hit\nS: Stand");
+                    switch (Console.ReadKey(true).Key)
                     {
-                        if (firstSplitCall) //First action on first deck
-                        {
-                            PrintCards();
-                            Console.WriteLine("First Deck\nSpace: Hit\nS: Stand\nD: Double-Down");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                // Double-down
-                                case ConsoleKey.D:
-                                    DoubleDown();
-                                    isPlayerDone = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            firstSplitCall = false;
-                        }
-                        else 
-                        {
-                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand, isSplit);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                    else // Second deck
-                    {
-                        firstSplitCall = true;
-                        if (firstSplitCall) //First action on first deck
-                        {
-                            PrintCards();
-                            Console.WriteLine("First Deck\nSpace: Hit S: Stand D: Double-Down");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand, isSplit);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                // Double-down
-                                case ConsoleKey.D:
-                                    DoubleDown();
-                                    isPlayerDone = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            firstSplitCall = false;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Space: Hit S: Stand D: Double-Down");
-                            switch (Console.ReadKey(true).Key)
-                            {
-                                // Hit
-                                case ConsoleKey.Spacebar:
-                                    Hit(playerHand, isSplit);
-                                    break;
-                                // Stand
-                                case ConsoleKey.S:
-                                    isPlayerDone = true;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-
+                        // Hit
+                        case ConsoleKey.Spacebar:
+                            Hit(playerHand);
+                            break;
+                        // Stand
+                        case ConsoleKey.S:
+                            isPlayerDone = true;
+                            break;
+                        default:
+                            break;
                     }
                 }
 	        }
         }
 
-        Hand Hit(PlayerHand player)
+        List<Card> Hit(List<Card> hand)
         {
-            dealer.Deal(player.cards, 1);
-            player.HandValue(player.cards);
-            if (player.handValue > maxValue)
-            {
-                Console.WriteLine("\nBust");
-                player.isBusted = true;
-            }
+            dealer.Deal(hand, 1);
 
-            return player;
+            return hand;
         }
 
         void DoubleDown()
@@ -349,6 +242,111 @@ namespace Blackjack
         {
             playerHand.split.Add(playerHand.cards[1]);
             playerHand.cards.Remove(playerHand.cards[1]);
-        }
+
+            PrintCards();
+            bool splitPlayerDone = false;
+            bool firstSplit = true;
+            bool firstSplitCall = true;
+
+            while (!splitPlayerDone)
+            {
+                if (firstSplit)
+                {
+                    if (firstSplitCall) //First action on first deck
+                    {
+                        PrintCards();
+                        Console.WriteLine("First Deck\nSpace: Hit\nS: Stand\nD: Double-Down");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand.cards);
+                                
+                                if (player.handValue > maxValue)
+                                {
+                                    Console.WriteLine("\nBust");
+                                    player.isBusted = true;
+                                }
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                firstSplit = false;
+                                break;
+                            // Double-down
+                            case ConsoleKey.D:
+                                DoubleDown();
+                                firstSplit = false;
+                                break;
+                            default:
+                                break;
+                        }
+                        firstSplitCall = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand.cards);
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                firstSplit = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                else // Second deck
+                {
+                    firstSplitCall = true;
+                    if (firstSplitCall) //First action on first deck
+                    {
+                        PrintCards();
+                        Console.WriteLine("First Deck\nSpace: Hit S: Stand D: Double-Down");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand);
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                splitPlayerDone = true;
+                                break;
+                            // Double-down
+                            case ConsoleKey.D:
+                                DoubleDown();
+                                splitPlayerDone = true;
+                                break;
+                            default:
+                                break;
+                        }
+                        firstSplitCall = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Space: Hit S: Stand D: Double-Down");
+                        switch (Console.ReadKey(true).Key)
+                        {
+                            // Hit
+                            case ConsoleKey.Spacebar:
+                                Hit(playerHand);
+                                break;
+                            // Stand
+                            case ConsoleKey.S:
+                                splitPlayerDone = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                }
+            }
+        }   
     }
 }

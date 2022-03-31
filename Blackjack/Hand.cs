@@ -7,11 +7,24 @@ namespace Blackjack
     class Hand
     {
         public List<Card> cards;
-        public int handValue { get; private set; }
         private const int maxValue = 21;
         private bool isAceHard;
         private bool aceCheck;
         public bool isBusted;
+        int _handValue;
+
+        public int handValue
+        {
+            get
+            {
+                HandValue(cards);
+                return handValue;
+            }
+            private set
+            {
+                _handValue = value;
+            }
+        }
 
         public Hand()
         {
