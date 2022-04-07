@@ -27,11 +27,16 @@ namespace Blackjack
             
 
             dealer.Deal(playerHand.cards, 2);
-            dealer.Deal(dealer.dealerHand.cards, 2);
-            if (dealer.dealerHand.cards.Any(card => card.cardValue == Value.Ace))
+            dealer.Deal(dealer.dealerCards, 2);
+            if (dealer.dealerCards.Any(card => card.cardValue == Value.Ace))
             {
-                dealer.dealerHand.HandValue(dealer.dealerHand.cards);
-                if (dealer.dealerHand.handValue == maxValue)
+                int value = 0;
+                dealer.HandValue(dealer.dealerCards);
+                foreach (Card card in dealer.dealerCards)
+                {
+                    value += card.intValue;
+                }
+                if (value == maxValue)
                 {
                     dealer.revealDealer = true;
                     EndCheck();
@@ -113,7 +118,7 @@ namespace Blackjack
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Dealer's Cards");
             Console.ResetColor();
-            foreach (Card card in dealer.dealerHand.cards)
+            foreach (Card card in dealer.dealerCards)
             {
                 Console.WriteLine(card.CardPrint(tempPrint));
             }
@@ -139,8 +144,9 @@ namespace Blackjack
         {
             bool isPlayerDone = false;
             bool isFirstAction = false;
+            bool isBusted = false;
 
-            while (!isPlayerDone && !playerHand.isBusted)
+            while (!isPlayerDone && !isBusted)
 	        {
                 PrintCards();
                 if (!isFirstAction)
@@ -166,6 +172,7 @@ namespace Blackjack
                             // Split
                             case ConsoleKey.Q:
                                 Split();
+                                isPlayerDone = true;
                                 break;
                             default:
                                 break;
@@ -217,11 +224,24 @@ namespace Blackjack
 	        }
         }
 
-        List<Card> Hit(List<Card> hand)
+        PlayerHand Hit(PlayerHand player)
         {
-            dealer.Deal(hand, 1);
+            dealer.Deal(player.cards, 1);
+            dealer.HandValue(player.cards);
+            int handValue = 0;
 
-            return hand;
+            foreach (Card card in player.cards)
+            {
+                handValue += card.intValue;
+            }
+
+            if (handValue > maxValue)
+            {
+                Console.WriteLine("\nBust");
+                player.isBusted = true;
+            }
+
+            return player;
         }
 
         void DoubleDown()
@@ -242,6 +262,8 @@ namespace Blackjack
         {
             playerHand.split.Add(playerHand.cards[1]);
             playerHand.cards.Remove(playerHand.cards[1]);
+            Hit(playerHand);
+            dealer.Deal(playerHand.split, 1);
 
             PrintCards();
             bool splitPlayerDone = false;
@@ -260,13 +282,7 @@ namespace Blackjack
                         {
                             // Hit
                             case ConsoleKey.Spacebar:
-                                Hit(playerHand.cards);
-                                
-                                if (player.handValue > maxValue)
-                                {
-                                    Console.WriteLine("\nBust");
-                                    player.isBusted = true;
-                                }
+                                Hit(playerHand);
                                 break;
                             // Stand
                             case ConsoleKey.S:
@@ -289,7 +305,7 @@ namespace Blackjack
                         {
                             // Hit
                             case ConsoleKey.Spacebar:
-                                Hit(playerHand.cards);
+                                Hit(playerHand);
                                 break;
                             // Stand
                             case ConsoleKey.S:

@@ -34,6 +34,7 @@ namespace Blackjack
         public bool isAvailable;
         public readonly Value cardValue;
         public readonly Suit cardSuit;
+        public int intValue;
 
         public Card(Value cardValue, Suit suit)
         {
