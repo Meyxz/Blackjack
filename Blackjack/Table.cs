@@ -13,7 +13,7 @@ namespace Blackjack
 
         const int maxValue = 21;
         const int minBet = 5;
-        const int maxBet = 250;
+        const int maxBet = 500;
 
 
         public Table()
@@ -21,7 +21,6 @@ namespace Blackjack
             dealer = new Dealer();
             player = new Player();
             deck = new Deck(6, true);
-
         }
 
         public void PlayRound()
@@ -143,11 +142,15 @@ namespace Blackjack
             bool conversionCheck = false;
             if (player.money < minBet)
             {
-                Console.WriteLine("Too low funds to play.");
+                Console.WriteLine("Funds are too low for minimum bet.");
             }
             else
             {
+                string moneyPrint = "Cash: " + player.money;
                 Console.WriteLine("Insert your bets ({0} - {1})", minBet, maxBet);
+                Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, Console.CursorTop -= 1);
+                Console.Write(moneyPrint);
+                Console.SetCursorPosition(0, Console.CursorTop += 1);
                 Console.CursorVisible = true;
                 while (!conversionCheck)
                 {
@@ -157,7 +160,7 @@ namespace Blackjack
 
                         if (player.bet >= minBet && player.bet <= maxBet)
                         {
-                            if (player.bet < player.money && player.bet >= minBet)
+                            if (player.bet <= player.money && player.bet >= minBet)
                             {
                                 conversionCheck = true;
                                 player.money -= player.bet;

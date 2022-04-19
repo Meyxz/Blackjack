@@ -11,6 +11,7 @@ namespace Blackjack
         public float money;
         public float bet;
         public float secondBet;
+        private bool secondBusted;
 
         public Player()
         {
@@ -20,10 +21,6 @@ namespace Blackjack
 
         public void PlayerChoice(Deck deck, List<Card> hand, bool hasSplitted, float bet)
         {
-            // Double down 
-            // Split 
-            // Stand
-            // Hit
             bool isPlayerDone = false;
             bool isFirstAction = true;
 
@@ -80,10 +77,11 @@ namespace Blackjack
                     }
 
                     isFirstAction = false;
-                } else
+                }
+                else
                 {
                     // After hit
-                    Console.WriteLine("Your cards:");
+                    Console.WriteLine("Player cards:");
                     PrintHand(hand);
                     Console.WriteLine("Space: Hit\nS: Stand");
                     switch (Console.ReadKey(true).Key)
@@ -116,6 +114,7 @@ namespace Blackjack
         private void Split(Deck deck)
         {
             secondHand = new List<Card>();
+            secondBusted = false;
             // dela upp i två händer.
             secondHand.Add(hand[0]);
             hand.RemoveAt(0);
@@ -124,17 +123,20 @@ namespace Blackjack
             Hit(deck, hand);
             Hit(deck, secondHand);
 
-            // printa hands
-            PrintHand(hand);
-            PrintHand(secondHand);
-
             // Skapar ett andra bet
             money -= bet;
             secondBet += bet;
 
             // låt spelaren göra val för varje hand.
+            int cursorPosition = Console.CursorTop;
+            Console.WriteLine("First hand");
+            PrintHand(hand);
             PlayerChoice(deck, hand, true, bet);
-            PlayerChoice(deck, hand, true, secondBet);
+            Console.CursorTop = cursorPosition;
+            Console.CursorLeft = 0;
+            Console.WriteLine("Second hand");
+            PrintHand(secondHand);
+            PlayerChoice(deck, secondHand, true, secondBet);
 
         }
 

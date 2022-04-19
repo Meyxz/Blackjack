@@ -9,10 +9,12 @@ namespace Blackjack
     {
 
         public List<Card> hand { get; protected set; }
+        public bool busted;
 
         public Person()
         {
             hand = new List<Card>();
+            busted = false;
         }
 
         public void AddCardFromDeck(Deck deck, List<Card> hand)
@@ -45,14 +47,8 @@ namespace Blackjack
         public void Hit(Deck deck, List<Card> hand)
         {
             AddCardFromDeck(deck, hand);
-
-            if (IsBusted())
-            {
-
-            }
-
-
         }
+
         public bool HasBlackjack()
         {
             if (CalculateHand() == 21)
