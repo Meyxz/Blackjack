@@ -31,16 +31,15 @@ namespace Blackjack
 
     class Card
     {
-        public bool isAvailable;
         public readonly Value cardValue;
         public readonly Suit cardSuit;
         public int intValue;
 
-        public Card(Value cardValue, Suit suit)
+        public Card(Value cardValue, Suit suit, int intValue)
         {
             this.cardValue = cardValue;
             this.cardSuit = suit;
-            isAvailable = true;
+            this.intValue = intValue;
         }
 
         public virtual string CardPrint(string output)

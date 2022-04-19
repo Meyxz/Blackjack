@@ -6,13 +6,13 @@ namespace Blackjack
 {
     class Diamonds : Card
     {
-        public Diamonds(Value value, Suit suit) : base(value, suit)
+        public Diamonds(Value value, Suit suit, int intValue) : base(value, suit, intValue)
         {
         }
 
         public override string CardPrint(string output)
         {
-            output = this.cardValue.ToString() + "♦";
+            output = this.cardValue.ToString() + "♦ " + intValue;
             return output;
         }
     }
