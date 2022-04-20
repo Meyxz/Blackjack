@@ -15,7 +15,6 @@ namespace Blackjack
         const int minBet = 5;
         const int maxBet = 500;
 
-
         public Table()
         {
             dealer = new Dealer();
@@ -147,9 +146,13 @@ namespace Blackjack
             else
             {
                 string moneyPrint = "Cash: " + player.money;
-                Console.WriteLine("Insert your bets ({0} - {1})", minBet, maxBet);
-                Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, Console.CursorTop -= 1);
+                Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
                 Console.Write(moneyPrint);
+                string temp = string.Format("Insert your bets ({0} - {1})", minBet, maxBet);
+                int midpos = (Console.WindowWidth / 2) - (temp.Length / 2);
+                int toppos = (Console.WindowHeight / 3);
+                Console.SetCursorPosition(midpos, toppos);
+                Console.WriteLine(temp);
                 Console.SetCursorPosition(0, Console.CursorTop += 1);
                 Console.CursorVisible = true;
                 while (!conversionCheck)
