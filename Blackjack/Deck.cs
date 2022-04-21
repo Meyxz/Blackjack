@@ -113,5 +113,12 @@ namespace Blackjack
             cards.Remove(card);
             return card;
         }
+
+        public Card TESTTakeCard()
+        {
+            Card card = cards.Find(c => c.cardValue == Value.King);
+            cards.Remove(card);
+            return card;
+        }
     }
 }

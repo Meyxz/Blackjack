@@ -30,10 +30,15 @@ namespace Blackjack
             dealer.hand.Clear();
             player.ClearHands();
 
-            dealer.AddCardFromDeck(deck, dealer.hand);
-            dealer.AddCardFromDeck(deck, dealer.hand);
-            player.AddCardFromDeck(deck, player.hand);
-            player.AddCardFromDeck(deck, player.hand);
+            dealer.Hit(deck, dealer.hand);
+            dealer.Hit(deck, dealer.hand);
+
+            player.hand.Add(deck.TESTTakeCard());
+            player.hand.Add(deck.TESTTakeCard());
+
+            // player.AddCardFromDeck(deck, player.hand);
+            // player.AddCardFromDeck(deck, player.hand);
+
             Console.Clear();
             Console.SetCursorPosition(dealer.position[0], dealer.position[1] - 1);
             Console.WriteLine("Dealer's cards");
@@ -54,13 +59,12 @@ namespace Blackjack
                 dealer.PrintHand(dealer.hand);
                 if (player.HasBlackjack(player.hand))
                 {
-
                     Console.WriteLine("Push");
                     player.money += player.bet;
                 }
                 else
                 {
-                    Console.WriteLine("Dealer wins!");
+                    Console.WriteLine("Dealer blackjack!");
                 }
             }
             else if (player.HasBlackjack(player.hand))
@@ -68,12 +72,27 @@ namespace Blackjack
                 Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
                 dealer.PrintHand(dealer.hand);
                 player.money += player.bet * 2.5F;
+                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count);
                 Console.WriteLine("Player natural blackjack");
             }
             else
             {
+                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count);
                 player.PlayerChoice(deck, player.hand, false, player.bet);
-
+                Console.SetCursorPosition(0, player.position[1] + player.hand.Count);
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + i);
+                    Console.WriteLine(new string(' ', 14));
+                }
+                if (player.secondHand != null)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Console.SetCursorPosition(player.secondPos[0], player.secondPos[1] + player.secondHand.Count + i);
+                        Console.WriteLine(new string(' ', 14));
+                    }
+                }
 
                 while (dealer.CalculateHand(dealer.hand) < 17)
                 {
@@ -93,11 +112,11 @@ namespace Blackjack
         public void PlayTable()
         {
             bool runCheck = false;
+            Console.Clear();
+            Console.WriteLine("Welcome to the Blackjack table\nPress any key to continue");
+            Console.ReadKey(true);
             while (!runCheck)
             {
-                Console.Clear();
-                Console.WriteLine("Welcome to the Blackjack table\nPress any key to continue");
-                Console.ReadKey(true);
                 PlayRound();
                 Console.WriteLine("Do you want to play another round? (Y/N)");
                 bool continueCheck = false;
@@ -110,7 +129,7 @@ namespace Blackjack
                     }
                     else if (ckey == ConsoleKey.N)
                     {
-                        runCheck = true;
+                        Environment.Exit(0);
                     }
                 }
             }
@@ -118,10 +137,13 @@ namespace Blackjack
 
         void TableBet(Player player)
         {
+            Console.Clear();
             bool conversionCheck = false;
             if (player.money < minBet)
             {
-                Console.WriteLine("Funds are too low for minimum bet.");
+                Console.WriteLine("Funds are too low for minimum bet.\nReturn when your funds are higher.");
+                Console.ReadKey(true);
+                Environment.Exit(0);
             }
             else
             {
@@ -152,12 +174,13 @@ namespace Blackjack
                         }
                         else
                         {
+
                             Console.WriteLine("Number not in range");
                         }
                     }
                     else
                     {
-                        Console.Write("Incorrect number      ");
+                        Console.WriteLine("Incorrect number");
                     }
                     Console.SetCursorPosition(0, toppos + 1);
                     Console.Write(new string(' ', Console.WindowWidth));
@@ -168,9 +191,10 @@ namespace Blackjack
 
         public void CheckResult(List<Card> hand, float bet)
         {
+            Console.SetCursorPosition(player.position[0], (player.position[1] + player.hand.Count));
             if (player.CalculateHand(hand) > 21)
             {
-                Console.WriteLine("Bust");
+                Console.WriteLine("Player bust");
             }
             else
             {
@@ -197,6 +221,15 @@ namespace Blackjack
                     {
                         Console.WriteLine("Player wins!");
                         player.money += bet * 2;
+                    }
+                    else if (player.CalculateHand(hand) == dealer.CalculateHand(dealer.hand))
+                    {
+                        Console.WriteLine("Push");
+                        player.money += player.bet;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Dealer wins!");
                     }
                 }
             }

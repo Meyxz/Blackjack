@@ -9,18 +9,18 @@ namespace Blackjack
     {
         public List<Card> secondHand;
         public int[] position = new int[2];
+        public int[] secondPos;
         public float money;
         public float bet;
         public float secondBet;
-        private bool secondBusted;
         
 
         public Player()
         {
-            money = 500f;
-            bet = 0f;
+            money = 500F;
+            bet = 0F;
             position[0] = (Console.WindowWidth / 4);
-            position[1] = (int)(Console.WindowHeight * 0.40);
+            position[1] = (int)(Console.WindowHeight * 0.4F);
         }
 
         public void PlayerChoice(Deck deck, List<Card> hand, bool hasSplitted, float bet)
@@ -28,20 +28,21 @@ namespace Blackjack
             bool isPlayerDone = false;
             bool isFirstAction = true;
 
-            int[] playerPos = new int[2];
+            int tempPos = Console.CursorLeft;
 
             while (!isPlayerDone && CalculateHand(hand) < 22)
             {
                 if (isFirstAction && money >= bet)
                 {   
                     if (hand[0].cardValue.Equals(hand[1].cardValue) && !hasSplitted){
-                        Console.CursorLeft = position[0];
+                        
+                        Console.CursorLeft = tempPos;
                         Console.WriteLine("Space: Hit");
-                        Console.CursorLeft = position[0];
+                        Console.CursorLeft = tempPos; ;
                         Console.WriteLine("S: Stand");
-                        Console.CursorLeft = position[0];
+                        Console.CursorLeft = tempPos;
                         Console.WriteLine("D: Double-Down");
-                        Console.CursorLeft = position[0];
+                        Console.CursorLeft = tempPos;
                         Console.WriteLine("Q: Split");
                         switch (Console.ReadKey(true).Key)
                         {
@@ -68,8 +69,12 @@ namespace Blackjack
                         }
                     } else
                     {
-                        Console.CursorLeft = position[0];
-                        Console.WriteLine("Space: Hit\nS: Stand\nD: Double-Down");
+                        Console.CursorLeft = tempPos;
+                        Console.WriteLine("Space: Hit");
+                        Console.CursorLeft = tempPos;
+                        Console.WriteLine("S: Stand");
+                        Console.CursorLeft = tempPos;
+                        Console.WriteLine("D: Double-Down");
                         switch (Console.ReadKey(true).Key)
                         {
                             // Hit
@@ -94,11 +99,11 @@ namespace Blackjack
                 }
                 else
                 {
-                    Console.SetCursorPosition(position[0], position[1]);
+                    Console.SetCursorPosition(tempPos, position[1]);
                     PrintHand(hand);
-                    Console.CursorLeft = position[0];
+                    Console.CursorLeft = tempPos;
                     Console.WriteLine("Space: Hit");
-                    Console.CursorLeft = position[0];
+                    Console.CursorLeft = tempPos;
                     Console.WriteLine("S: Stand");
                     switch (Console.ReadKey(true).Key)
                     {
@@ -115,9 +120,11 @@ namespace Blackjack
                     }
                 }
             }
+
             if (CalculateHand(hand) > 21)
             {
-                busted = true;
+                Console.SetCursorPosition(tempPos, position[1]);
+                PrintHand(hand);
             }
         }
 
@@ -134,7 +141,9 @@ namespace Blackjack
         private void Split(Deck deck)
         {
             secondHand = new List<Card>();
-            secondBusted = false;
+            secondPos = new int[2];
+            secondPos[0] = (int)(Console.WindowWidth * 0.6F);
+            secondPos[1] = position[1];
             // dela upp i två händer.
             secondHand.Add(hand[0]);
             hand.RemoveAt(0);
@@ -147,15 +156,23 @@ namespace Blackjack
             money -= bet;
             secondBet += bet;
 
-            // låt spelaren göra val för varje hand.
-            int cursorPosition = Console.CursorTop;
-            Console.WriteLine("First hand");
+            // Print hands
+            Console.SetCursorPosition(position[0], position[1]);
             PrintHand(hand);
-            PlayerChoice(deck, hand, true, bet);
-            Console.CursorTop = cursorPosition;
-            Console.CursorLeft = 0;
-            Console.WriteLine("Second hand");
+            Console.SetCursorPosition(secondPos[0], (secondPos[1]-1));
+            Console.WriteLine("Split Cards");
+            Console.CursorLeft = secondPos[0];
             PrintHand(secondHand);
+
+            // låt spelaren göra val för varje hand.
+            Console.SetCursorPosition(position[0], position[1] + hand.Count);
+            PlayerChoice(deck, hand, true, bet);
+            for (int i = 0; i < 4; i++)
+            {
+                Console.SetCursorPosition(0, position[1] + hand.Count + i);
+                Console.WriteLine(new string(' ', Console.WindowWidth));
+            }
+            Console.SetCursorPosition(secondPos[0], secondPos[1] + secondHand.Count);
             PlayerChoice(deck, secondHand, true, secondBet);
 
         }

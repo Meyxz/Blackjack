@@ -44,8 +44,8 @@ namespace Blackjack
 
         public virtual string CardPrint(string output)
         {
-            output = this.cardValue.ToString() + "ERROR";
-            return output;
+                output = "ERROR: Card not specified type";
+                return output;
         }
     }
 }

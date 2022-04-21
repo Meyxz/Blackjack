@@ -9,18 +9,17 @@ namespace Blackjack
     {
 
         public List<Card> hand { get; protected set; }
-        public bool busted;
 
         public Person()
         {
             hand = new List<Card>();
-            busted = false;
         }
 
-        public void AddCardFromDeck(Deck deck, List<Card> hand)
+        public void Hit(Deck deck, List<Card> hand)
         {
             hand.Add(deck.TakeCard());
         }
+
         public int CalculateHand(List<Card> hand)
         {
             int handValue = 0;
@@ -43,10 +42,6 @@ namespace Blackjack
 
             return handValue;
 
-        }
-        public void Hit(Deck deck, List<Card> hand)
-        {
-            AddCardFromDeck(deck, hand);
         }
 
         public bool HasBlackjack(List<Card> hand)
@@ -72,7 +67,7 @@ namespace Blackjack
             foreach (Card card in hand)
             {
                 Console.CursorLeft = xPos;
-                Console.WriteLine(card.CardPrint("") + "      ");
+                Console.WriteLine(card.CardPrint("") + new string(' ', 14));
             }
 
             

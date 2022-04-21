@@ -12,8 +12,17 @@ namespace Blackjack
 
         public override string CardPrint(string output)
         {
-            output = this.cardValue.ToString() + "♦ " + intValue;
-            return output;
+            int index = Array.IndexOf(Enum.GetValues(cardValue.GetType()), cardValue);
+            if (index < 10 && index > 0)
+            {
+                output = intValue + "♦";
+                return output;
+            }
+            else
+            {
+                output = this.cardValue.ToString().Substring(0, 1) + "♦";
+                return output;
+            }
         }
     }
 }
