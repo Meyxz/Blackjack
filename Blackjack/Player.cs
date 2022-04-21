@@ -13,7 +13,7 @@ namespace Blackjack
         public float money;
         public float bet;
         public float secondBet;
-        
+
 
         public Player()
         {
@@ -33,9 +33,10 @@ namespace Blackjack
             while (!isPlayerDone && CalculateHand(hand) < 22)
             {
                 if (isFirstAction && money >= bet)
-                {   
-                    if (hand[0].cardValue.Equals(hand[1].cardValue) && !hasSplitted){
-                        
+                {
+                    if (hand[0].cardValue.Equals(hand[1].cardValue) && !hasSplitted)
+                    {
+
                         Console.CursorLeft = tempPos;
                         Console.WriteLine("Space: Hit");
                         Console.CursorLeft = tempPos; ;
@@ -67,7 +68,8 @@ namespace Blackjack
                             default:
                                 break;
                         }
-                    } else
+                    }
+                    else
                     {
                         Console.CursorLeft = tempPos;
                         Console.WriteLine("Space: Hit");
@@ -134,7 +136,7 @@ namespace Blackjack
 
             money -= bet;
             bet += bet;
-            
+
             Hit(deck, this.hand);
         }
 
@@ -155,11 +157,12 @@ namespace Blackjack
             // Skapar ett andra bet
             money -= bet;
             secondBet += bet;
+            PrintMoney();
 
             // Print hands
             Console.SetCursorPosition(position[0], position[1]);
             PrintHand(hand);
-            Console.SetCursorPosition(secondPos[0], (secondPos[1]-1));
+            Console.SetCursorPosition(secondPos[0], (secondPos[1] - 1));
             Console.WriteLine("Split Cards");
             Console.CursorLeft = secondPos[0];
             PrintHand(secondHand);
@@ -184,6 +187,13 @@ namespace Blackjack
             {
                 secondHand.Clear();
             }
+        }
+
+        public void PrintMoney()
+        {
+            string moneyPrint = "Cash: " + money;
+            Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
+            Console.Write(moneyPrint);
         }
     }
 }

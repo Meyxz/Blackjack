@@ -24,17 +24,18 @@ namespace Blackjack
         {
             int handValue = 0;
             int numOfAces = 0;
-            hand.ForEach((card) => { 
-                handValue += card.intValue; 
+            hand.ForEach((card) =>
+            {
+                handValue += card.intValue;
                 if (card.cardValue == Value.Ace)
                 {
                     numOfAces += 1;
                 }
             });
-           
+
             if (handValue > 21 && numOfAces > 0)
             {
-                for (;numOfAces > 0 && handValue > 21; numOfAces--)
+                for (; numOfAces > 0 && handValue > 21; numOfAces--)
                 {
                     handValue -= 10;
                 }
@@ -52,6 +53,7 @@ namespace Blackjack
             }
             return false;
         }
+
         protected bool IsBusted(List<Card> hand)
         {
             if (CalculateHand(hand) > 21)
@@ -69,9 +71,6 @@ namespace Blackjack
                 Console.CursorLeft = xPos;
                 Console.WriteLine(card.CardPrint("") + new string(' ', 14));
             }
-
-            
         }
-
     }
 }

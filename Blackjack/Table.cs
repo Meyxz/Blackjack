@@ -33,11 +33,8 @@ namespace Blackjack
             dealer.Hit(deck, dealer.hand);
             dealer.Hit(deck, dealer.hand);
 
-            player.hand.Add(deck.TESTTakeCard());
-            player.hand.Add(deck.TESTTakeCard());
-
-            // player.AddCardFromDeck(deck, player.hand);
-            // player.AddCardFromDeck(deck, player.hand);
+            player.Hit(deck, player.hand);
+            player.Hit(deck, player.hand);
 
             Console.Clear();
             Console.SetCursorPosition(dealer.position[0], dealer.position[1] - 1);
@@ -49,9 +46,7 @@ namespace Blackjack
             Console.SetCursorPosition(player.position[0], player.position[1]);
             player.PrintHand(player.hand);
 
-            string moneyPrint = "Cash: " + player.money;
-            Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
-            Console.Write(moneyPrint);
+            player.PrintMoney();
 
             if (dealer.HasBlackjack(dealer.hand))
             {
@@ -101,11 +96,13 @@ namespace Blackjack
                 Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
                 dealer.PrintHand(dealer.hand);
 
-                CheckResult(player.hand, player.bet);
+                CheckResult(player.hand, player.bet, player.position);
                 if (player.secondHand != null)
                 {
-                    CheckResult(player.secondHand, player.secondBet);
+                    CheckResult(player.secondHand, player.secondBet, player.secondPos);
                 }
+
+                player.PrintMoney();
             }
         }
 
@@ -118,7 +115,10 @@ namespace Blackjack
             while (!runCheck)
             {
                 PlayRound();
-                Console.WriteLine("Do you want to play another round? (Y/N)");
+                string temp = "Do you want to play another round? (Y/N)";
+                Console.SetCursorPosition((Console.WindowWidth / 2) - (temp.Length / 2), (int)(Console.WindowHeight * 0.70));
+                Console.WriteLine(temp);
+
                 bool continueCheck = false;
                 while (!continueCheck)
                 {
@@ -147,9 +147,7 @@ namespace Blackjack
             }
             else
             {
-                string moneyPrint = "Cash: " + player.money;
-                Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
-                Console.Write(moneyPrint);
+                player.PrintMoney();
                 string temp = string.Format("Insert your bets ({0} - {1})", minBet, maxBet);
                 int midpos = (Console.WindowWidth / 2) - (temp.Length / 2);
                 int toppos = (Console.WindowHeight / 3);
@@ -189,43 +187,34 @@ namespace Blackjack
             }
         }
 
-        public void CheckResult(List<Card> hand, float bet)
+        public void CheckResult(List<Card> hand, float bet, int[] position)
         {
-            Console.SetCursorPosition(player.position[0], (player.position[1] + player.hand.Count));
-            if (player.CalculateHand(hand) > 21)
+            int dealerValue = dealer.CalculateHand(dealer.hand);
+            int playerValue = player.CalculateHand(hand);
+
+            Console.SetCursorPosition(position[0], position[1] + hand.Count);
+            if (playerValue > 21)
             {
                 Console.WriteLine("Player bust");
             }
             else
             {
-                if (dealer.CalculateHand(dealer.hand) > 21)
+                if (dealerValue > 21)
                 {
                     Console.WriteLine("Player Wins!");
-                    player.money += bet * 2;
+                    player.money += (bet * 2);
                 }
                 else
                 {
-                    if (dealer.HasBlackjack(dealer.hand))
-                    {
-                        if (player.HasBlackjack(dealer.hand))
-                        {
-                            Console.WriteLine("Push");
-                            player.money += bet;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Dealer wins!");
-                        }
-                    }
-                    else if (player.CalculateHand(hand) > dealer.CalculateHand(dealer.hand))
-                    {
-                        Console.WriteLine("Player wins!");
-                        player.money += bet * 2;
-                    }
-                    else if (player.CalculateHand(hand) == dealer.CalculateHand(dealer.hand))
+                    if (playerValue == dealerValue)
                     {
                         Console.WriteLine("Push");
                         player.money += player.bet;
+                    }
+                    else if (playerValue > dealerValue)
+                    {
+                        Console.WriteLine("Player wins!");
+                        player.money += (bet * 2);
                     }
                     else
                     {
