@@ -71,6 +71,8 @@ namespace Blackjack
                 Console.CursorLeft = xPos;
                 Console.WriteLine(card.CardPrint("") + new string(' ', 14));
             }
+            Console.CursorLeft = xPos;
+            Console.WriteLine("Total value: " + CalculateHand(hand));
         }
     }
 }

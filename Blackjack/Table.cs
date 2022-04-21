@@ -8,7 +8,7 @@ namespace Blackjack
     class Table
     {
         Dealer dealer;
-        Player player;
+        List<Player> player;
         Deck deck;
 
         const int maxValue = 21;
@@ -18,11 +18,11 @@ namespace Blackjack
         public Table()
         {
             dealer = new Dealer();
-            player = new Player();
+            player.Add(new Player());
             deck = new Deck(6, true);
         }
 
-        public void PlayRound()
+        public void PlayRound(int playercount)
         {
             Console.Clear();
             player.bet = 0;
@@ -67,24 +67,24 @@ namespace Blackjack
                 Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
                 dealer.PrintHand(dealer.hand);
                 player.money += player.bet * 2.5F;
-                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count);
+                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + 1);
                 Console.WriteLine("Player natural blackjack");
             }
             else
             {
-                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count);
+                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + 1);
                 player.PlayerChoice(deck, player.hand, false, player.bet);
                 Console.SetCursorPosition(0, player.position[1] + player.hand.Count);
                 for (int i = 0; i < 4; i++)
                 {
-                    Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + i);
+                    Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + 1 + i);
                     Console.WriteLine(new string(' ', 14));
                 }
                 if (player.secondHand != null)
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        Console.SetCursorPosition(player.secondPos[0], player.secondPos[1] + player.secondHand.Count + i);
+                        Console.SetCursorPosition(player.secondPos[0], player.secondPos[1] + player.secondHand.Count + 1 + i);
                         Console.WriteLine(new string(' ', 14));
                     }
                 }
@@ -111,7 +111,7 @@ namespace Blackjack
             bool runCheck = false;
             Console.Clear();
             Console.WriteLine("Welcome to the Blackjack table\nPress any key to continue");
-            Console.ReadKey(true);
+            Console.ReadKey(true);  
             while (!runCheck)
             {
                 PlayRound();
@@ -192,7 +192,7 @@ namespace Blackjack
             int dealerValue = dealer.CalculateHand(dealer.hand);
             int playerValue = player.CalculateHand(hand);
 
-            Console.SetCursorPosition(position[0], position[1] + hand.Count);
+            Console.SetCursorPosition(position[0], position[1] + hand.Count + 1);
             if (playerValue > 21)
             {
                 Console.WriteLine("Player bust");
