@@ -21,7 +21,7 @@ namespace Blackjack
         {
             hand.Add(deck.TakeCard());
         }
-        public int CalculateHand()
+        public int CalculateHand(List<Card> hand)
         {
             int handValue = 0;
             int numOfAces = 0;
@@ -49,17 +49,17 @@ namespace Blackjack
             AddCardFromDeck(deck, hand);
         }
 
-        public bool HasBlackjack()
+        public bool HasBlackjack(List<Card> hand)
         {
-            if (CalculateHand() == 21)
+            if (CalculateHand(hand) == 21)
             {
                 return true;
             }
             return false;
         }
-        protected bool IsBusted()
+        protected bool IsBusted(List<Card> hand)
         {
-            if (CalculateHand() > 21)
+            if (CalculateHand(hand) > 21)
             {
                 return true;
             }
@@ -68,10 +68,11 @@ namespace Blackjack
 
         public void PrintHand(List<Card> hand)
         {
- 
+            int xPos = Console.CursorLeft;
             foreach (Card card in hand)
             {
-                Console.WriteLine(card.CardPrint(""));
+                Console.CursorLeft = xPos;
+                Console.WriteLine(card.CardPrint("") + "      ");
             }
 
             

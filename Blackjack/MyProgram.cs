@@ -9,6 +9,7 @@ namespace Blackjack
         Table table;
         public void Run()
         {
+            Console.CursorVisible = false;
             table = new Table();
 
             table.PlayTable();

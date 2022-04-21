@@ -35,16 +35,26 @@ namespace Blackjack
             player.AddCardFromDeck(deck, player.hand);
             player.AddCardFromDeck(deck, player.hand);
             Console.Clear();
-            Console.WriteLine("Dealer's hand");
+            Console.SetCursorPosition(dealer.position[0], dealer.position[1] - 1);
+            Console.WriteLine("Dealer's cards");
+            Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
             dealer.PrintFirstHand();
-            Console.WriteLine("Player's hand");
+            Console.SetCursorPosition(player.position[0], player.position[1] - 1);
+            Console.WriteLine("Player's cards");
+            Console.SetCursorPosition(player.position[0], player.position[1]);
             player.PrintHand(player.hand);
 
-            if (dealer.HasBlackjack())
+            string moneyPrint = "Cash: " + player.money;
+            Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
+            Console.Write(moneyPrint);
+
+            if (dealer.HasBlackjack(dealer.hand))
             {
+                Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
                 dealer.PrintHand(dealer.hand);
-                if (player.HasBlackjack())
+                if (player.HasBlackjack(player.hand))
                 {
+
                     Console.WriteLine("Push");
                     player.money += player.bet;
                 }
@@ -53,59 +63,29 @@ namespace Blackjack
                     Console.WriteLine("Dealer wins!");
                 }
             }
-            else if (player.HasBlackjack())
+            else if (player.HasBlackjack(player.hand))
             {
-
+                Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
+                dealer.PrintHand(dealer.hand);
                 player.money += player.bet * 2.5F;
-            }
-
-            
-
-            player.PlayerChoice(deck, player.hand, false, player.bet);
-
-
-            while (dealer.CalculateHand() < 17)
-            {
-                dealer.Hit(deck, dealer.hand);
-            }
-            Console.Clear();
-            Console.WriteLine("Dealer's hand");
-            dealer.PrintHand(dealer.hand);
-            Console.WriteLine("Player's hand");
-            player.PrintHand(player.hand);
-
-            // Kolla resultat
-
-            if (player.CalculateHand() > 21)
-            {
-                Console.WriteLine("Bust");
+                Console.WriteLine("Player natural blackjack");
             }
             else
             {
-                if (dealer.CalculateHand() > 21)
+                player.PlayerChoice(deck, player.hand, false, player.bet);
+
+
+                while (dealer.CalculateHand(dealer.hand) < 17)
                 {
-                    Console.WriteLine("Player Wins!");
-                    player.money += player.bet * 2;
+                    dealer.Hit(deck, dealer.hand);
                 }
-                else
+                Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
+                dealer.PrintHand(dealer.hand);
+
+                CheckResult(player.hand, player.bet);
+                if (player.secondHand != null)
                 {
-                    if (dealer.HasBlackjack())
-                    {
-                        if (player.HasBlackjack())
-                        {
-                            Console.WriteLine("Push");
-                            player.money += player.bet;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Dealer wins!");
-                        }
-                    }
-                    else if (player.CalculateHand() > dealer.CalculateHand())
-                    {
-                        Console.WriteLine("Player wins!");
-                        player.money += player.bet * 2;
-                    }
+                    CheckResult(player.secondHand, player.secondBet);
                 }
             }
         }
@@ -157,6 +137,7 @@ namespace Blackjack
                 Console.CursorVisible = true;
                 while (!conversionCheck)
                 {
+                    Console.SetCursorPosition(midpos, toppos + 1);
                     string tempStr = Console.ReadLine().Trim();
                     if (float.TryParse(tempStr, out player.bet))
                     {
@@ -176,10 +157,48 @@ namespace Blackjack
                     }
                     else
                     {
-                        Console.WriteLine("Incorrect number");
+                        Console.Write("Incorrect number      ");
                     }
+                    Console.SetCursorPosition(0, toppos + 1);
+                    Console.Write(new string(' ', Console.WindowWidth));
                 }
                 Console.CursorVisible = false;
+            }
+        }
+
+        public void CheckResult(List<Card> hand, float bet)
+        {
+            if (player.CalculateHand(hand) > 21)
+            {
+                Console.WriteLine("Bust");
+            }
+            else
+            {
+                if (dealer.CalculateHand(dealer.hand) > 21)
+                {
+                    Console.WriteLine("Player Wins!");
+                    player.money += bet * 2;
+                }
+                else
+                {
+                    if (dealer.HasBlackjack(dealer.hand))
+                    {
+                        if (player.HasBlackjack(dealer.hand))
+                        {
+                            Console.WriteLine("Push");
+                            player.money += bet;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Dealer wins!");
+                        }
+                    }
+                    else if (player.CalculateHand(hand) > dealer.CalculateHand(dealer.hand))
+                    {
+                        Console.WriteLine("Player wins!");
+                        player.money += bet * 2;
+                    }
+                }
             }
         }
     }
