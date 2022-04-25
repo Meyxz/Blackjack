@@ -13,13 +13,14 @@ namespace Blackjack
         public float money;
         public float bet;
         public float secondBet;
+        public int playerID;
 
-
-        public Player()
+        public Player(int id, float width)
         {
             money = 500F;
             bet = 0F;
-            position[0] = (Console.WindowWidth / 4);
+            playerID = id;
+            position[0] = (int)(Console.WindowWidth * width);
             position[1] = (int)(Console.WindowHeight * 0.4F);
         }
 
@@ -28,7 +29,8 @@ namespace Blackjack
             bool isPlayerDone = false;
             bool isFirstAction = true;
 
-            int tempPos = Console.CursorLeft;
+            int tempPos = Console.CursorTop;
+            int printPos = Console.CursorLeft + ("Total value: " + CalculateHand(hand)).Length + 2;
 
             while (!isPlayerDone && CalculateHand(hand) < 22)
             {
@@ -36,14 +38,14 @@ namespace Blackjack
                 {
                     if (hand[0].cardValue.Equals(hand[1].cardValue) && !hasSplitted)
                     {
-
-                        Console.CursorLeft = tempPos;
+                        Console.CursorTop = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("Space: Hit");
-                        Console.CursorLeft = tempPos; ;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("S: Stand");
-                        Console.CursorLeft = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("D: Double-Down");
-                        Console.CursorLeft = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("Q: Split");
                         switch (Console.ReadKey(true).Key)
                         {
@@ -58,6 +60,8 @@ namespace Blackjack
                             // Double-down
                             case ConsoleKey.D:
                                 DoubleDown(deck);
+                                Console.SetCursorPosition(position[0], tempPos);
+                                PrintHand(hand);
                                 isPlayerDone = true;
                                 break;
                             // Split
@@ -71,11 +75,12 @@ namespace Blackjack
                     }
                     else
                     {
-                        Console.CursorLeft = tempPos;
+                        Console.CursorTop = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("Space: Hit");
-                        Console.CursorLeft = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("S: Stand");
-                        Console.CursorLeft = tempPos;
+                        Console.CursorLeft = printPos;
                         Console.WriteLine("D: Double-Down");
                         switch (Console.ReadKey(true).Key)
                         {
@@ -90,6 +95,8 @@ namespace Blackjack
                             // Double-down
                             case ConsoleKey.D:
                                 DoubleDown(deck);
+                                Console.SetCursorPosition(position[0], tempPos);
+                                PrintHand(hand);
                                 isPlayerDone = true;
                                 break;
                             default:
@@ -101,11 +108,12 @@ namespace Blackjack
                 }
                 else
                 {
-                    Console.SetCursorPosition(tempPos, position[1]);
+                    Console.SetCursorPosition(position[0], tempPos);
                     PrintHand(hand);
-                    Console.CursorLeft = tempPos;
+                    Console.CursorTop = tempPos;
+                    Console.CursorLeft = printPos;
                     Console.WriteLine("Space: Hit");
-                    Console.CursorLeft = tempPos;
+                    Console.CursorLeft = printPos;
                     Console.WriteLine("S: Stand");
                     switch (Console.ReadKey(true).Key)
                     {
@@ -125,7 +133,7 @@ namespace Blackjack
 
             if (CalculateHand(hand) > 21)
             {
-                Console.SetCursorPosition(tempPos, position[1]);
+                Console.SetCursorPosition(position[0], tempPos);
                 PrintHand(hand);
             }
         }
@@ -144,11 +152,11 @@ namespace Blackjack
         {
             secondHand = new List<Card>();
             secondPos = new int[2];
-            secondPos[0] = (int)(Console.WindowWidth * 0.6F);
-            secondPos[1] = position[1];
+            secondPos[0] = position[0];
+            secondPos[1] = (int)(Console.WindowHeight * 0.7F);
             // dela upp i två händer.
-            secondHand.Add(hand[0]);
-            hand.RemoveAt(0);
+            secondHand.Add(hand[1]);
+            hand.RemoveAt(1);
 
             // ge vardera hand 1 till kort.
             Hit(deck, hand);
@@ -157,7 +165,7 @@ namespace Blackjack
             // Skapar ett andra bet
             money -= bet;
             secondBet += bet;
-            PrintMoney();
+            PrintMoney(playerID);
 
             // Print hands
             Console.SetCursorPosition(position[0], position[1]);
@@ -168,16 +176,21 @@ namespace Blackjack
             PrintHand(secondHand);
 
             // låt spelaren göra val för varje hand.
-            Console.SetCursorPosition(position[0], position[1] + hand.Count);
+            Console.SetCursorPosition(position[0], position[1]);
             PlayerChoice(deck, hand, true, bet);
             for (int i = 0; i < 4; i++)
             {
-                Console.SetCursorPosition(0, position[1] + hand.Count + i);
-                Console.WriteLine(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(position[0] + ("Total value: " + CalculateHand(hand)).Length + 2, position[1] + i);
+                Console.Write(new string(' ', 14));
             }
-            Console.SetCursorPosition(secondPos[0], secondPos[1] + secondHand.Count);
-            PlayerChoice(deck, secondHand, true, secondBet);
 
+            Console.SetCursorPosition(secondPos[0], secondPos[1]);
+            PlayerChoice(deck, secondHand, true, secondBet);
+            for (int i = 0; i < 4; i++)
+            {
+                Console.SetCursorPosition(secondPos[0] + ("Total value: " + CalculateHand(secondHand)).Length + 2, secondPos[1] + i);
+                Console.Write(new string(' ', 14));
+            }
         }
 
         public void ClearHands()
@@ -192,7 +205,20 @@ namespace Blackjack
         public void PrintMoney()
         {
             string moneyPrint = "Cash: " + money;
+
+            Console.SetCursorPosition(Console.WindowWidth - (moneyPrint.Length + 7), 0);
+            Console.Write(new string(' ', moneyPrint.Length + 7));
             Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, 0);
+            Console.Write(moneyPrint);
+        }
+
+        public void PrintMoney(int player)
+        {
+            string moneyPrint = "Cash: " + money;
+
+            Console.SetCursorPosition(Console.WindowWidth - (moneyPrint.Length + 7), player);
+            Console.Write(new string(' ', moneyPrint.Length + 7));
+            Console.SetCursorPosition(Console.WindowWidth - moneyPrint.Length, player);
             Console.Write(moneyPrint);
         }
     }
