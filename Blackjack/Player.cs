@@ -14,6 +14,7 @@ namespace Blackjack
         public float bet;
         public float secondBet;
         public int playerID;
+        public bool naturalCheck;
 
         public Player(int id, float width)
         {
@@ -22,6 +23,7 @@ namespace Blackjack
             playerID = id;
             position[0] = (int)(Console.WindowWidth * width);
             position[1] = (int)(Console.WindowHeight * 0.4F);
+            naturalCheck = false;
         }
 
         public void PlayerChoice(Deck deck, List<Card> hand, bool hasSplitted, float bet)

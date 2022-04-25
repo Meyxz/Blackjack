@@ -10,7 +10,7 @@ namespace Blackjack
 
         public Dealer()
         {
-            position[0] = (int)(Console.WindowWidth / 2 - ("Dealer's cards".Length / 2));
+            position[0] = (int)(Console.WindowWidth * 0.4F);
             position[1] = (int)(Console.WindowHeight * 0.1F);
         }
 

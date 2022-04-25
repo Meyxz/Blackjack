@@ -34,6 +34,7 @@ namespace Blackjack
             foreach (Player player in players)
             {
                 player.bet = 0;
+                player.secondBet = 0;
                 TableBet(player);
                 player.ClearHands();
 
@@ -81,49 +82,53 @@ namespace Blackjack
                 }
             }
 
-            foreach (Player player in players)
+            foreach (Player player in players.FindAll(x => x.HasBlackjack(x.hand) == true))
             {
-                if (player.HasBlackjack(player.hand))
-                {
-                    player.money += (player.bet * 2.5F);
-                    Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + 1);
-                    Console.WriteLine("Player natural blackjack");
-                }
+                player.money += (float)Math.Round(player.bet * 2.5F, 1);
+                Console.SetCursorPosition(player.position[0], player.position[1] + player.hand.Count + 1);
+                Console.WriteLine("Player natural blackjack");
+                player.naturalCheck = true;
             }
 
             foreach (Player player in players)
             {
-                Console.SetCursorPosition(player.position[0], player.position[1]);
-                player.PlayerChoice(deck, player.hand, false, player.bet);
-                Console.SetCursorPosition(0, player.position[1] + player.hand.Count);
-                for (int i = 0; i < 4; i++)
+                if (!player.naturalCheck)
                 {
-                    Console.SetCursorPosition((player.position[0] + ("Total value: " + player.CalculateHand(player.hand)).Length + 2), player.position[1] + i);
-                    Console.Write(new string(' ', 14));
-                }
-                if (player.secondHand != null)
-                {
+                    Console.SetCursorPosition(player.position[0], player.position[1]);
+                    player.PlayerChoice(deck, player.hand, false, player.bet);
+                    Console.SetCursorPosition(0, player.position[1] + player.hand.Count);
                     for (int i = 0; i < 4; i++)
                     {
-                        Console.SetCursorPosition((player.secondPos[0] + ("Total value: " + player.CalculateHand(player.secondHand)).Length + 2), player.secondPos[1]);
-                        Console.WriteLine(new string(' ', 14));
+                        Console.SetCursorPosition((player.position[0] + ("Total value: " + player.CalculateHand(player.hand)).Length + 2), player.position[1] + i);
+                        Console.Write(new string(' ', 14));
+                    }
+                    if (player.secondHand != null)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            Console.SetCursorPosition((player.secondPos[0] + ("Total value: " + player.CalculateHand(player.secondHand)).Length + 2), player.secondPos[1]);
+                            Console.WriteLine(new string(' ', 14));
+                        }
                     }
                 }
             }
 
             foreach (Player player in players)
             {
-                while (dealer.CalculateHand(dealer.hand) < 17)
+                if (!player.naturalCheck)
                 {
-                    dealer.Hit(deck, dealer.hand);
-                }
-                Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
-                dealer.PrintHand(dealer.hand);
+                    while (dealer.CalculateHand(dealer.hand) < 17)
+                    {
+                        dealer.Hit(deck, dealer.hand);
+                    }
+                    Console.SetCursorPosition(dealer.position[0], dealer.position[1]);
+                    dealer.PrintHand(dealer.hand);
 
-                player.money = CheckResult(player.hand, player.bet, player.money, player.position);
-                if (player.secondHand != null)
-                {
-                    player.money = CheckResult(player.secondHand, player.secondBet, player.money, player.secondPos);
+                    player.money = CheckResult(player.hand, player.bet, player.money, player.position);
+                    if (player.secondHand != null)
+                    {
+                        player.money = CheckResult(player.secondHand, player.secondBet, player.money, player.secondPos);
+                    }
                 }
             }
 
@@ -287,7 +292,7 @@ namespace Blackjack
                 if (dealerValue > 21)
                 {
                     Console.WriteLine("Player Wins!");
-                    money += (bet * 2);
+                    money += (float)Math.Round(bet * 2, 1);
                 }
                 else
                 {
@@ -299,7 +304,7 @@ namespace Blackjack
                     else if (playerValue > dealerValue)
                     {
                         Console.WriteLine("Player wins!");
-                        money += (bet * 2);
+                        money += (float)Math.Round(bet * 2, 1);
                     }
                     else
                     {
